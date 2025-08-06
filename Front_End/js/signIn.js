@@ -1,33 +1,28 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("form");
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
+document.querySelector("form").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-    form.addEventListener("submit", function (e) {
-        // Trim input values
-        const emailValue = email.value.trim();
-        const passwordValue = password.value.trim();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-        // Email check
-        if (!emailValue || !validateEmail(emailValue)) {
-            e.preventDefault();
-            alert("Please enter a valid email address.");
-            email.focus();
-            return;
+    try {
+        const response = await fetch("http://localhost:8080/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(data.message); // "OK"
+            // Save token/data if returned: data.data
+            window.location.href = "dashboard.html"; // or your home page
+        } else {
+            alert("Login failed");
         }
-
-        // Password check
-        if (passwordValue.length < 6) {
-            e.preventDefault();
-            alert("Password must be at least 6 characters long.");
-            password.focus();
-            return;
-        }
-    });
-
-    // Email validation function
-    function validateEmail(email) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
+    } catch (error) {
+        alert("Error: " + error.message);
     }
 });

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-
+@CrossOrigin(origins = "*")
 public class AuthController {
     private final AuthService authService;
 
@@ -28,7 +28,7 @@ public class AuthController {
     }
 
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<APIResponse> login(@RequestBody AuthDTO authDTO) {
         return ResponseEntity.ok(new APIResponse(200, "OK", authService.authenticate(authDTO)));
     }
